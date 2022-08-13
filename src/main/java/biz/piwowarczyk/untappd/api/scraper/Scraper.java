@@ -5,18 +5,21 @@ import io.vavr.control.Either;
 import org.jsoup.HttpStatusException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.util.Optional;
 
 public abstract class Scraper<T, V> {
 
-    private final String UNTAPPD_URL = "https://untappd.com/";
+    @Autowired
+    private UntappdConfig untappdConfig;
 
     public Either<Optional<V>, ScraperError> process(T queryParams) {
 
         String url = new StringBuffer()
-                .append(UNTAPPD_URL)
+                .append(untappdConfig.getUrl())
                 .append(getTypeUrl())
                 .append(getUrlQueryParams(queryParams))
                 .toString();

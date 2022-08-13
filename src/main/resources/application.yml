@@ -1,0 +1,4 @@
+untappd:
+  url : "https://untappd.com/"
+  beerPrefix : "b/"
+  venuePrefix : "v/"

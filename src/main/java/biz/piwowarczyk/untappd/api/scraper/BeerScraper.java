@@ -17,14 +17,15 @@ import java.util.Optional;
 @Component
 public class BeerScraper extends Scraper<BeerQueryParams, Beer> {
 
-    private final String UNTAPPD_BEER = "b/";
+    @Autowired
+    private UntappdConfig untappdConfig;
 
     @Autowired
     private PageCleanUtil pageCleanUtil;
 
     @Override
     String getTypeUrl() {
-        return UNTAPPD_BEER;
+        return untappdConfig.getBeerPrefix();
     }
 
     @Override

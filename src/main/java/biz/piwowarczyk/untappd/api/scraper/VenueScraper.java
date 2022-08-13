@@ -20,14 +20,15 @@ import static java.util.stream.Collectors.toUnmodifiableList;
 @Component
 public class VenueScraper extends Scraper<VenueQueryParams, Venue> {
 
-    private final String UNTAPPD_VENUE = "v/";
+    @Autowired
+    private UntappdConfig untappdConfig;
 
     @Autowired
     private PageCleanUtil pageCleanUtil;
 
     @Override
     String getTypeUrl() {
-        return UNTAPPD_VENUE;
+        return untappdConfig.getVenuePrefix();
     }
 
     @Override
