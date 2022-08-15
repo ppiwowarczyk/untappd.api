@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.io.IOException;
 import java.util.Optional;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 public abstract class Scraper<T, V> {
 
     @Autowired
@@ -28,7 +30,9 @@ public abstract class Scraper<T, V> {
 
         } catch (IOException e) {
             return switch (e) {
-                case HttpStatusException httpStatusException -> Either.left(Optional.empty());
+                case HttpStatusException httpStatusException ->
+                        httpStatusException.getStatusCode() == NOT_FOUND.value() ?
+                                Either.left(Optional.empty())  : Either.right(new ScraperError(e.toString()));
                 default -> Either.right(new ScraperError(e.toString()));
             };
         }

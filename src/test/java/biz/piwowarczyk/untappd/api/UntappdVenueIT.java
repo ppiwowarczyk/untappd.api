@@ -1,40 +1,70 @@
 package biz.piwowarczyk.untappd.api;
 
 import biz.piwowarczyk.untappd.api.model.Response;
+import biz.piwowarczyk.untappd.api.scraper.UntappdConfig;
+import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.WireMock;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.ContextConfiguration;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ContextConfiguration(initializers = {WireMockInitializer.class})
 public class UntappdVenueIT {
 
+    @Autowired
+    private UntappdConfig untappdConfig;
+    @Autowired
+    private WireMockServer wireMockServer;
     @LocalServerPort
     private int port;
-
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Test
-    void venueApiShouldReturnVenueStats() {
+    private String venueId = "9450338";
+    private String uri;
+    private String wireMockedUrl;
 
-        // given
-        String venueId = "9450338";
+    @BeforeEach
+    public void setup() {
 
-        // when
-        String uri = new StringBuffer()
+        uri = new StringBuffer()
                 .append("http://localhost:")
                 .append(port)
                 .append("/venue?id=")
                 .append(venueId)
                 .toString();
 
+        wireMockedUrl = new StringBuffer()
+                .append("/")
+                .append(untappdConfig.getVenuePrefix())
+                .append("anyName/")
+                .append(venueId)
+                .toString();
+    }
 
+    @Test
+    void venueApiShouldReturnVenueStats() {
+
+        // given
+        wireMockServer.stubFor(
+                WireMock.get(wireMockedUrl)
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type", MediaType.APPLICATION_XHTML_XML_VALUE)
+                                .withBodyFile("venue.html")
+                        ));
+
+        // when
         ResponseEntity<Response> venueResponse = this.restTemplate.getForEntity(uri, Response.class);
 
         // then
@@ -48,22 +78,37 @@ public class UntappdVenueIT {
     void venueApiShouldReturn404() {
 
         // given
-        String venueId = "aaa";
-
+        wireMockServer.stubFor(
+                WireMock.get(wireMockedUrl)
+                        .willReturn(aResponse()
+                                .withStatus(404)
+                        ));
         // when
-        String uri = new StringBuffer()
-                .append("http://localhost:")
-                .append(port)
-                .append("/venue?id=")
-                .append(venueId)
-                .toString();
-
-
         ResponseEntity<Response> venueResponse = this.restTemplate.getForEntity(uri, Response.class);
 
         // then
         assertThat(venueResponse).isNotNull();
         assertThat(venueResponse.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
+        assertThat(venueResponse.getBody().response()).isNull();
+        assertThat(venueResponse.getBody().error()).isNotNull();
+    }
+
+    @Test
+    void venueApiShouldReturn500() {
+
+        // given
+        wireMockServer.stubFor(
+                WireMock.get(wireMockedUrl)
+                        .willReturn(aResponse()
+                                .withStatus(500)
+                        ));
+
+        // when
+        ResponseEntity<Response> venueResponse = this.restTemplate.getForEntity(uri, Response.class);
+
+        // then
+        assertThat(venueResponse).isNotNull();
+        assertThat(venueResponse.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
         assertThat(venueResponse.getBody().response()).isNull();
         assertThat(venueResponse.getBody().error()).isNotNull();
     }
