@@ -47,9 +47,17 @@ public class VenuePageObject extends PageObject {
                 .select("div.caps").get(0)
                 .attr("data-rating");
 
+        String checkInDate = singleElement
+                .select("div.checkin")
+                .select("div.feedback").get(0)
+                .select("div.bottom").get(0)
+                .select("a").get(0)
+                .childNodes().get(0)
+                .toString();
+
         User user = new User(userId, userName, avatarUrl);
 
-        return new CheckIn(id, rating, beerId, breweryId, user);
+        return new CheckIn(id, checkInDate, rating, beerId, breweryId, user);
     }
 
     private LinkObject getLink(Element element) {

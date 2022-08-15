@@ -1,3 +1,5 @@
+server:
+  port : 8081
 untappd:
   url : "https://untappd.com/"
   beerPrefix : "b/"

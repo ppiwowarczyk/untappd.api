@@ -7,6 +7,7 @@ import biz.piwowarczyk.untappd.api.scraper.pageObject.VenuePageObject;
 import biz.piwowarczyk.untappd.api.scraper.params.VenueQueryParams;
 import biz.piwowarczyk.untappd.api.scraper.util.PageCleanUtil;
 import biz.piwowarczyk.untappd.api.model.User;
+import biz.piwowarczyk.untappd.api.scraper.util.PageToDateTimeUtil;
 import io.vavr.control.Either;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class VenueScraper extends Scraper<VenueQueryParams, Venue> {
 
     @Autowired
     private PageCleanUtil pageCleanUtil;
+
+    @Autowired
+    private PageToDateTimeUtil pageToDateTimeUtil;
 
     @Override
     String getTypeUrl() {
@@ -68,7 +72,9 @@ public class VenueScraper extends Scraper<VenueQueryParams, Venue> {
         String beerId = pageCleanUtil.parseIdFromUrl(checkIn.beerId());
         String breweryId = pageCleanUtil.parseIdFromUrl(checkIn.breweryId());
 
+        String dateTime = pageToDateTimeUtil.convert(checkIn.dateTime());
+
         User user = new User(userId, checkIn.user().name(), checkIn.user().avatar());
-        return new CheckIn(checkIn.id(), checkIn.rating(), beerId, breweryId, user);
+        return new CheckIn(checkIn.id(), dateTime, checkIn.rating(), beerId, breweryId, user);
     }
 }
