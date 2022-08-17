@@ -56,7 +56,8 @@ public class BeerScraper extends Scraper<BeerQueryParams, Beer> {
                                 basicBeer.style(),
                                 pageCleanUtil.parseAbv(basicBeer.abv()),
                                 brewery,
-                                beerRating
+                                beerRating,
+                                basicBeer.img()
                         )
                 ));
     }

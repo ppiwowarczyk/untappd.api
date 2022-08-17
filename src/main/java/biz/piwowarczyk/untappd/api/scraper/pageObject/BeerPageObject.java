@@ -10,6 +10,7 @@ import org.jsoup.select.Elements;
 public class BeerPageObject extends PageObject {
 
     private final Element nameSection;
+    private final Element imgSection;
     private final Element details;
     private final Elements statsSections;
 
@@ -21,6 +22,12 @@ public class BeerPageObject extends PageObject {
                 .select("div.top").get(0)
                 .select("div.basic").get(0)
                 .select("div.name").get(0);
+
+        imgSection = document
+                        .select("div.content").get(0)
+                        .select("div.top").get(0)
+                        .select("div.basic").get(0)
+                        .select("img").get(0);
 
         details = document
                 .select("div.content").get(0)
@@ -38,8 +45,9 @@ public class BeerPageObject extends PageObject {
         String beerName = nameSection.select("h1").get(0).text();
         String beerStyle = nameSection.select("p").get(1).text();
         String abv = details.select("p.abv").first().text();
+        String img = imgSection.attr("src");
 
-        return new Beer(null, beerName, beerStyle, abv, null, null);
+        return new Beer(null, beerName, beerStyle, abv, null, null, img);
     }
 
     public Brewery getBrewery() {
