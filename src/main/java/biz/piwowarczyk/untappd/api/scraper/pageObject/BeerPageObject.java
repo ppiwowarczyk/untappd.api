@@ -43,7 +43,7 @@ public class BeerPageObject extends PageObject {
     public Beer getBeer() {
 
         String beerName = nameSection.select("h1").get(0).text();
-        String beerStyle = nameSection.select("p").get(1).text();
+        String beerStyle = nameSection.select("p.style").get(0).text();
         String abv = details.select("p.abv").first().text();
         String img = imgSection.attr("src");
 
