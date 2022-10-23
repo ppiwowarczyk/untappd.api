@@ -26,7 +26,9 @@ public abstract class Scraper<T, V> {
                 .toString();
 
         try {
-            return processWithEngine(Jsoup.connect(url).get());
+
+            Document document = provideStaticDocument(queryParams).isPresent() ? provideStaticDocument(queryParams).get() : Jsoup.connect(url).get();
+            return processWithEngine(document);
 
         } catch (IOException e) {
             return switch (e) {
@@ -43,4 +45,6 @@ public abstract class Scraper<T, V> {
     abstract String getUrlQueryParams(T queryParams);
 
     abstract Either<Optional<V>, ScraperError> processWithEngine(Document document);
+
+    abstract Optional<Document> provideStaticDocument(T queryParams);
 }

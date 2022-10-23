@@ -52,7 +52,8 @@ public class VenuePageObject extends PageObject {
                 .select("div.feedback").get(0)
                 .select("div.bottom").get(0)
                 .select("a").get(0)
-                .attr("data-gregtime");
+                .text();
+                //.attr("data-gregtime");
 
         User user = new User(userId, userName, avatarUrl);
 

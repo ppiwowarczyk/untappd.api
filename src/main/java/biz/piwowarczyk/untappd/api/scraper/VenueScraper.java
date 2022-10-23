@@ -1,12 +1,13 @@
 package biz.piwowarczyk.untappd.api.scraper;
 
 import biz.piwowarczyk.untappd.api.model.CheckIn;
+import biz.piwowarczyk.untappd.api.model.User;
 import biz.piwowarczyk.untappd.api.model.Venue;
 import biz.piwowarczyk.untappd.api.scraper.error.ScraperError;
 import biz.piwowarczyk.untappd.api.scraper.pageObject.VenuePageObject;
 import biz.piwowarczyk.untappd.api.scraper.params.VenueQueryParams;
+import biz.piwowarczyk.untappd.api.scraper.repository.VenueStaticRepository;
 import biz.piwowarczyk.untappd.api.scraper.util.PageCleanUtil;
-import biz.piwowarczyk.untappd.api.model.User;
 import biz.piwowarczyk.untappd.api.scraper.util.PageToDateTimeUtil;
 import io.vavr.control.Either;
 import org.jsoup.nodes.Document;
@@ -29,6 +30,9 @@ public class VenueScraper extends Scraper<VenueQueryParams, Venue> {
 
     @Autowired
     private PageToDateTimeUtil pageToDateTimeUtil;
+
+    @Autowired
+    private VenueStaticRepository venueStaticRepository;
 
     @Override
     String getTypeUrl() {
@@ -76,5 +80,10 @@ public class VenueScraper extends Scraper<VenueQueryParams, Venue> {
 
         User user = new User(userId, checkIn.user().name(), checkIn.user().avatar());
         return new CheckIn(checkIn.id(), dateTime, checkIn.rating(), beerId, breweryId, user);
+    }
+
+    @Override
+    Optional<Document> provideStaticDocument(VenueQueryParams queryParams) {
+        return venueStaticRepository.apply(queryParams);
     }
 }

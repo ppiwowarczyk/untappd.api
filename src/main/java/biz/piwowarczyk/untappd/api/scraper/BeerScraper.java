@@ -61,4 +61,9 @@ public class BeerScraper extends Scraper<BeerQueryParams, Beer> {
                         )
                 ));
     }
+
+    @Override
+    Optional<Document> provideStaticDocument(BeerQueryParams queryParams) {
+        return Optional.empty();
+    }
 }
