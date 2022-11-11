@@ -41,8 +41,8 @@ public class VenuePageObject extends PageObject {
         String beerId = getLink(links.get(1)).linkId;
         String breweryId = getLink(links.get(2)).linkId;
 
-        String rating = topElement
-                .select("div.checkin-comment").get(0)
+        Elements checkInComment = topElement.select("div.checkin-comment");
+        String rating = checkInComment.isEmpty() ? null : checkInComment.get(0)
                 .select("div.rating-serving").get(0)
                 .select("div.caps").get(0)
                 .attr("data-rating");

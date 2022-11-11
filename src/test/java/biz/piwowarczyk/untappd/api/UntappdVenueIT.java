@@ -75,6 +75,27 @@ public class UntappdVenueIT {
     }
 
     @Test
+    void venueApiShouldReturnVenueStatsForNoRatingCheckIn() {
+
+        // given
+        wireMockServer.stubFor(
+                WireMock.get(wireMockedUrl)
+                        .willReturn(aResponse()
+                                .withHeader("Content-Type", MediaType.APPLICATION_XHTML_XML_VALUE)
+                                .withBodyFile("venueWithNoRating.html")
+                        ));
+
+        // when
+        ResponseEntity<Response> venueResponse = this.restTemplate.getForEntity(uri, Response.class);
+
+        // then
+        assertThat(venueResponse).isNotNull();
+        assertThat(venueResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
+        assertThat(venueResponse.getBody().response()).isNotNull();
+        assertThat(venueResponse.getBody().error()).isNull();
+    }
+
+    @Test
     void venueApiShouldReturn404() {
 
         // given
