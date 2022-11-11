@@ -2,6 +2,7 @@ package biz.piwowarczyk.untappd.api.scraper.pageObject;
 
 import biz.piwowarczyk.untappd.api.model.CheckIn;
 import biz.piwowarczyk.untappd.api.model.User;
+import biz.piwowarczyk.untappd.api.scraper.jsoupExtension.ElementsWrapper;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -41,10 +42,10 @@ public class VenuePageObject extends PageObject {
         String beerId = getLink(links.get(1)).linkId;
         String breweryId = getLink(links.get(2)).linkId;
 
-        Elements checkInComment = topElement.select("div.checkin-comment");
-        String rating = checkInComment.isEmpty() ? null : checkInComment.get(0)
-                .select("div.rating-serving").get(0)
-                .select("div.caps").get(0)
+        String rating = new ElementsWrapper(topElement.select("div.checkin-comment"))
+                .getFirst()
+                .select("div.rating-serving").getFirst()
+                .select("div.caps").getFirst()
                 .attr("data-rating");
 
         String checkInDate = singleElement
