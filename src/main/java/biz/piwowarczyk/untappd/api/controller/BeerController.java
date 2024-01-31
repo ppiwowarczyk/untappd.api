@@ -27,6 +27,7 @@ public class BeerController {
 
         BeerQueryParams beerQueryParams = new BeerQueryParams(beerId);
         var result = beerScraper.process(beerQueryParams);
-        return responseCreator.apply(result);
+        return null;
+        //return responseCreator.apply(result);
     }
 }

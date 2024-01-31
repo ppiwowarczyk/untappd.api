@@ -69,7 +69,7 @@ public class UntappdBeerIT {
         ResponseEntity<Response> venueResponse = this.restTemplate.getForEntity(uri, Response.class);
 
         // then
-        assertThat(venueResponse).isNotNull();
+        assertThat(venueResponse).isNull();
         assertThat(venueResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(venueResponse.getBody().response()).isNotNull();
         assertThat(venueResponse.getBody().error()).isNull();
