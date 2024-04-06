@@ -50,7 +50,7 @@ public class VenueScraper extends Scraper<VenueQueryParams, Venue> {
     }
 
     @Override
-    Either<Optional<Venue>, ScraperError> processWithEngine(Document document) {
+    Either<ScraperError, Optional<Venue>> processWithEngine(Document document) {
 
         VenuePageObject venuePageObject = new VenuePageObject(document);
 
@@ -61,7 +61,7 @@ public class VenueScraper extends Scraper<VenueQueryParams, Venue> {
                 .collect(toUnmodifiableList());
 
 
-        return Either.left(
+        return Either.right(
                 Optional.of(
                         new Venue(
                                 venuePageObject.getTitle(),

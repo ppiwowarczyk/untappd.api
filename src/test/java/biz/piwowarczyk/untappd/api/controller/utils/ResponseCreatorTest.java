@@ -18,7 +18,7 @@ public class ResponseCreatorTest {
     public void shouldReturnInternalServerErrorResponseWhenErrorOccurs() {
 
         // given
-        Either<Optional<String>, ScraperError> result = Either.right(new ScraperError("test error"));
+        Either<ScraperError, Optional<String>> result = Either.left(new ScraperError("test error"));
 
         // when
         ResponseEntity<Response<String>> responseEntity = responseCreator.apply(result);
@@ -34,7 +34,7 @@ public class ResponseCreatorTest {
     public void shouldReturnNotFoundResponseWhenResultIsEmpty() {
 
         // given
-        Either<Optional<String>, ScraperError> result = Either.left(Optional.empty());
+        Either<ScraperError, Optional<String>> result = Either.right(Optional.empty());
 
         // when
         ResponseEntity<Response<String>> responseEntity = responseCreator.apply(result);
@@ -50,7 +50,7 @@ public class ResponseCreatorTest {
     public void shouldReturnOkResponseWithResult() {
 
         // given
-        Either<Optional<String>, ScraperError> result = Either.left(Optional.of("test result"));
+        Either<ScraperError, Optional<String>> result = Either.right(Optional.of("test result"));
 
         // when
         ResponseEntity<Response<String>> responseEntity = responseCreator.apply(result);

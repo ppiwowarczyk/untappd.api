@@ -17,7 +17,7 @@ public abstract class Scraper<T, V> {
     @Autowired
     private UntappdConfig untappdConfig;
 
-    public Either<Optional<V>, ScraperError> process(T queryParams) {
+    public Either<ScraperError, Optional<V>> process(T queryParams) {
 
         String url = new StringBuffer()
                 .append(untappdConfig.getUrl())
@@ -33,8 +33,8 @@ public abstract class Scraper<T, V> {
                 return switch (documents.getLeft()) {
                     case HttpStatusException httpStatusException ->
                             httpStatusException.getStatusCode() == NOT_FOUND.value() ?
-                                    Either.left(Optional.empty())  : Either.right(new ScraperError(documents.getLeft().toString()));
-                    default -> Either.right(new ScraperError(documents.getLeft().toString()));
+                                    Either.right(Optional.empty())  : Either.left(new ScraperError(documents.getLeft().toString()));
+                    default -> Either.left(new ScraperError(documents.getLeft().toString()));
                 };
             }
             else
@@ -47,7 +47,7 @@ public abstract class Scraper<T, V> {
 
     abstract String getUrlQueryParams(T queryParams);
 
-    abstract Either<Optional<V>, ScraperError> processWithEngine(Document document);
+    abstract Either<ScraperError, Optional<V>> processWithEngine(Document document);
 
     abstract Optional<Document> provideStaticDocument(T queryParams);
 }

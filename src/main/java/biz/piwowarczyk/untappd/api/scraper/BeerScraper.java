@@ -39,7 +39,7 @@ public class BeerScraper extends Scraper<BeerQueryParams, Beer> {
     }
 
     @Override
-    Either<Optional<Beer>, ScraperError> processWithEngine(Document document) {
+    Either<ScraperError, Optional<Beer>> processWithEngine(Document document) {
 
         BeerPageObject beerPageObject = new BeerPageObject(document);
 
@@ -48,7 +48,7 @@ public class BeerScraper extends Scraper<BeerQueryParams, Beer> {
         Brewery brewery = beerPageObject.getBrewery();
         BeerRating beerRating = beerPageObject.getBeerRating();
 
-        return Either.left(
+        return Either.right(
                 Optional.of(
                         new Beer(
                                 pageCleanUtil.parseIdFromUrl(beerIdFromUrl),

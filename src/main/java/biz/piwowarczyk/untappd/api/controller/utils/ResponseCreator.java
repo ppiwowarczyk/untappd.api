@@ -12,18 +12,18 @@ import java.util.Optional;
 import java.util.function.Function;
 
 @Component
-public class ResponseCreator<T> implements Function<Either<Optional<T>, ScraperError>, ResponseEntity<Response<T>>> {
+public class ResponseCreator<T> implements Function<Either<ScraperError, Optional<T>>, ResponseEntity<Response<T>>> {
     @Override
-    public ResponseEntity<Response<T>> apply(Either<Optional<T>, ScraperError> result) {
+    public ResponseEntity<Response<T>> apply(Either<ScraperError, Optional<T>> result) {
 
         ResponseEntity<Response<T>> returnValue;
 
-        if (result.isRight()) {
-            returnValue =  new ResponseEntity<>(new Response<T>(null, new Error(HttpStatus.INTERNAL_SERVER_ERROR, result.get().details())), HttpStatus.INTERNAL_SERVER_ERROR);
-        } else if (result.getLeft().isEmpty()) {
+        if (result.isLeft()) {
+            returnValue =  new ResponseEntity<>(new Response<T>(null, new Error(HttpStatus.INTERNAL_SERVER_ERROR, result.getLeft().details())), HttpStatus.INTERNAL_SERVER_ERROR);
+        } else if (result.get().isEmpty()) {
             returnValue =  new ResponseEntity<>(new Response<T>(null, new Error(HttpStatus.NOT_FOUND, null)), HttpStatus.NOT_FOUND);
         } else {
-            returnValue =  new ResponseEntity<>(new Response<T>(result.getLeft().get(), null), HttpStatus.OK);
+            returnValue =  new ResponseEntity<>(new Response<T>(result.get().get(), null), HttpStatus.OK);
         }
 
         return returnValue;
