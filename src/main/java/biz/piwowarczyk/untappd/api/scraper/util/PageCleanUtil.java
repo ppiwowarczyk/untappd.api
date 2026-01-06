@@ -6,7 +6,10 @@ import org.springframework.stereotype.Component;
 public class PageCleanUtil {
 
     public String parseIdFromUrl(String beerIdFromUrl) {
-        return beerIdFromUrl.substring(beerIdFromUrl. lastIndexOf('/')).replace("/", "");
+        if (beerIdFromUrl.lastIndexOf('/') == (beerIdFromUrl.length() - 1)) {
+            beerIdFromUrl = beerIdFromUrl.substring(0, beerIdFromUrl.length() - 1);
+        }
+        return beerIdFromUrl.substring(beerIdFromUrl.lastIndexOf('/')  + 1 );
     }
 
     public String parseAbv(String abv) {
