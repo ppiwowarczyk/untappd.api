@@ -62,7 +62,7 @@ class ScraperTest {
     @Test
     void process_returnsRightWhenProvideStaticDocumentPresent() throws Exception {
         Document doc = Jsoup.parse("<html></html>", "http://example.com/beer/1");
-        var engineResult = Either.right(Optional.of("ok"));
+        Either<biz.piwowarczyk.untappd.api.scraper.error.ScraperError, Optional<String>> engineResult = Either.right(Optional.of("ok"));
         TestScraper scraper = new TestScraper(false, Optional.of(doc), engineResult);
 
         injectUntappdConfig(scraper);

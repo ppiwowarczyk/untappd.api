@@ -23,6 +23,6 @@ class ExceptionHandlerEngineTest {
         assertEquals(500, response.getStatusCodeValue());
         assertNotNull(response.getBody());
         assertNotNull(response.getBody().error());
-        assertTrue(response.getBody().error().message().contains("fail message"));
+        assertTrue(response.getBody().error().description().contains("fail message"));
     }
 }
